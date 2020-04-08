@@ -40,5 +40,22 @@ namespace APBD.Controllers
             student.indexNumber = $"s{new Random().Next(1, 2000)}";
             return Ok(student);
         }
+
+        [HttpPut("{id}")]
+        public IActionResult UpdateStudent(int id)
+        {
+            if(id == 1)
+            {
+                return Ok("Student zaktualizowany");
+            }
+
+            return NotFound("Brak studenta");
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteStudent(int id)
+        {
+            return Ok("Usuwanie ukończone");
+        }
     }
 }
