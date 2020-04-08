@@ -12,9 +12,9 @@ namespace APBD.Controllers
     public class StudentsController : ControllerBase
     {
         [HttpGet]
-        public string GetStudent()
+        public string GetStudent(string orderBy)
         {
-            return "Kowalskim, Malewski";
+            return $"Kowalskim, Malewski, Jedrula, Andrzejak sortowanie={orderBy}";
         }
 
         [HttpGet("{id}")]
