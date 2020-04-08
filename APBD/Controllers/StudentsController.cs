@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using APBD.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,6 +32,13 @@ namespace APBD.Controllers
 
             return NotFound("Nie znaleziono");
 
+        }
+
+        [HttpPost]
+        public IActionResult CreateStudent(Student student)
+        {
+            student.indexNumber = $"s{new Random().Next(1, 2000)}";
+            return Ok(student);
         }
     }
 }
