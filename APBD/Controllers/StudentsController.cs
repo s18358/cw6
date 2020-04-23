@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using APBD.DAL;
 using APBD.Models;
+using APBD.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,13 +17,11 @@ namespace APBD.Controllers
 
     {
         private const string ConString = "Data Source=db-mssql;Initial Catalog=s18358;Integrated Security=True";
-        private readonly IDbService _dbService;
-        public StudentsController(IDbService dbService)
-        {
-            _dbService = dbService;
-        }
+
+
+     
         [HttpGet]
-        public IActionResult GetStudents()
+        public IActionResult GetStudents([FromServices] IStudentsDal dbService)
         {
             var list = new List<Student>();
             using(SqlConnection con = new SqlConnection(ConString))
