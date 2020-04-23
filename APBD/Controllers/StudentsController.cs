@@ -24,9 +24,28 @@ namespace APBD.Controllers
         [HttpGet]
         public IActionResult GetStudent(string orderBy)
         {
-            SqlConnection con = new SqlConnection(ConString);
-            SqlCommand com = new SqlCommand();
-            return Ok();
+            var list = new List<Student>();
+            using(SqlConnection con = new SqlConnection(ConString))
+            using(SqlCommand com = new SqlCommand())
+            {
+                com.Connection = con;
+                com.CommandText = "select * from student";
+
+                con.Open();
+                SqlDataReader dr = com.ExecuteReader();
+                while (dr.Read())
+                {
+                    var st = new Student();
+                    st.indexNumber = dr["IndexNumber"].ToString();
+                    st.firstName = dr["FirstName"].ToString();
+                    st.lastName = dr["LastName"].ToString();
+                    list.Add(st);
+                }
+            }
+
+
+            
+            return Ok(list);
         }
 
         [HttpGet("{id}")]

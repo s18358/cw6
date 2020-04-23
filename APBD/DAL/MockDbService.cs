@@ -15,9 +15,9 @@ namespace APBD.DAL
         {
             _students = new List<Student>
             {
-                new Student{idStudent=1, firstName = "Jan", lastName = "Kowlaski"},
+/*                new Student{idStudent=1, firstName = "Jan", lastName = "Kowlaski"},
                 new Student{idStudent=1, firstName = "Piotr", lastName = "Piotrkowski"},
-                new Student{idStudent=1, firstName = "Kot", lastName = "Kotowski"},
+                new Student{idStudent=1, firstName = "Kot", lastName = "Kotowski"},*/
             };
         }
 
