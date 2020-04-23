@@ -10,6 +10,7 @@ namespace APBD.Models
         public string firstName { get; set; }
         public string lastName { get; set; }
         public string indexNumber { get; set; }
+        public DateTime Brithdate { get; set; }
 
     }
 }
