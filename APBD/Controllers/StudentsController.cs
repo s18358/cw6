@@ -22,7 +22,7 @@ namespace APBD.Controllers
             _dbService = dbService;
         }
         [HttpGet]
-        public IActionResult GetStudent(string orderBy)
+        public IActionResult GetStudents()
         {
             var list = new List<Student>();
             using(SqlConnection con = new SqlConnection(ConString))
@@ -48,21 +48,28 @@ namespace APBD.Controllers
             return Ok(list);
         }
 
-        [HttpGet("{id}")]
-        public IActionResult GetStudent(int id)
+        [HttpGet("{indexNumber}")]
+        public IActionResult GetStudent(string indexNumber)
         {
-            if (id == 1)
+            using (SqlConnection con = new SqlConnection(ConString))
+            using (SqlCommand com = new SqlCommand())
             {
-                return Ok("Kowlaski");
+                com.Connection = con;
+                com.CommandText = "select * from student where indexNumber='" + indexNumber + "'";
+                con.Open();
+                var dr = com.ExecuteReader();
+                if (dr.Read())
+                {
+                    var st = new Student();
+                    st.indexNumber = dr["IndexNumber"].ToString();
+                    st.firstName = dr["FirstName"].ToString();
+                    st.lastName = dr["LastName"].ToString();
+                    return Ok(st);
+                }
             }
-            else if (id == 2)
-            {
-                return Ok("Malewski");
-            }
-
-            return NotFound("Nie znaleziono");
-
+                return NotFound();
         }
+
 
         [HttpPost]
         public IActionResult CreateStudent(Student student)
