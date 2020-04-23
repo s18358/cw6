@@ -13,7 +13,9 @@ namespace APBD.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class StudentsController : ControllerBase
+
     {
+        private const string ConString = "Data Source=db-mssql;Initial Catalog=s18358;Integrated Security=True";
         private readonly IDbService _dbService;
         public StudentsController(IDbService dbService)
         {
@@ -22,7 +24,7 @@ namespace APBD.Controllers
         [HttpGet]
         public IActionResult GetStudent(string orderBy)
         {
-            SqlConnection con = new SqlConnection();
+            SqlConnection con = new SqlConnection(ConString);
             SqlCommand com = new SqlCommand();
             return Ok();
         }
