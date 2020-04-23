@@ -55,16 +55,26 @@ namespace APBD.Controllers
             using (SqlCommand com = new SqlCommand())
             {
                 com.Connection = con;
-                com.CommandText = "select * from student where indexNumber='" + indexNumber + "'";
+                com.CommandText = "select * from Enrollment inner join Student ON Enrollment.IdEnrollment = Student.IdEnrollment where Student.IndexNumber = @index";
+
+                /*
+                SqlParameter par = new SqlParameter();
+                par.Value = indexNumber;
+                par.ParameterName = "index";
+                com.Parameters.Add(par);
+                */
+
+                com.Parameters.AddWithValue("index", indexNumber);
                 con.Open();
                 var dr = com.ExecuteReader();
                 if (dr.Read())
                 {
-                    var st = new Student();
-                    st.indexNumber = dr["IndexNumber"].ToString();
-                    st.firstName = dr["FirstName"].ToString();
-                    st.lastName = dr["LastName"].ToString();
-                    return Ok(st);
+                    var en = new Enrollment();
+                    en.IdEnrollment = dr["IdEnrollment"].ToString();
+                    en.Semester = dr["Semester"].ToString();
+                    en.IdStudy = dr["IdStudy"].ToString();
+                    en.Date = dr["StartDate"].ToString();
+                    return Ok(en);
                 }
             }
                 return NotFound();
