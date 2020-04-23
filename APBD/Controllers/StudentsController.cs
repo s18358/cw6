@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using APBD.DAL;
@@ -21,7 +22,9 @@ namespace APBD.Controllers
         [HttpGet]
         public IActionResult GetStudent(string orderBy)
         {
-            return Ok(_dbService.GetStudents());
+            SqlConnection con = new SqlConnection();
+            SqlCommand com = new SqlCommand();
+            return Ok();
         }
 
         [HttpGet("{id}")]
