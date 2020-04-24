@@ -1,17 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using APBD.DAL;
 using APBD.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using APBD.Middleware;
+using Microsoft.AspNetCore.Http;
+
 
 namespace APBD
 {
@@ -50,16 +46,39 @@ namespace APBD
                 config.SwaggerEndpoint("/swagger/v1/swagger.json", "s18358 Api");
             });
 
+            app.UseMiddleware<LogMiddleware>();
+
+            app.UseWhen(context => context.Request.Path.ToString().Contains("secured"), app =>
+            {
+                app.Use(async (context, next) =>
+                {
+                    if (!context.Request.Headers.ContainsKey("Index"))
+                    {
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        await context.Response.WriteAsync("Index number required");
+                        return;
+                    }
+
+                    var index = context.Request.Headers["Index"].ToString();
+                    var stud = 1;
+                    if (stud == 1)
+                    {
+                        context.Response.StatusCode = StatusCodes.Status404NotFound;
+                        await context.Response.WriteAsync($"Student ({index}) not found");
+                        return;
+                    }
+
+                    await next();
+                });
+            });
+
+            app.UseHttpsRedirection();
+
             app.UseRouting();
 
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
-
-
     }
 }
