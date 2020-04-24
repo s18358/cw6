@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 
 namespace APBD
 {
@@ -28,6 +29,11 @@ namespace APBD
         {
             services.AddTransient<IStudentsDal, SqlServerDbDal>();
             services.AddControllers();
+            // Dodawanie dokumentaji .1
+            services.AddSwaggerGen(config =>
+            {
+                config.SwaggerDoc("v1", new OpenApiInfo { Title = "s18358 Api", Version = "v1" });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -37,6 +43,12 @@ namespace APBD
             {
                 app.UseDeveloperExceptionPage();
             }
+            // Dodawanie dokumentaji .2
+            app.UseSwagger();
+            app.UseSwaggerUI(config =>
+            {
+                config.SwaggerEndpoint("/swagger/v1/swagger.json", "s18358 Api");
+            });
 
             app.UseRouting();
 
