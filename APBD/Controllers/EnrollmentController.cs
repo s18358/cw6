@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Threading.Tasks;
 using APBD.DTOs.Requests;
-using APBD.Models;
-using Microsoft.AspNetCore.Http;
+using APBD.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APBD.Controllers
@@ -14,40 +9,24 @@ namespace APBD.Controllers
     [ApiController]
     public class EnrollmentController : ControllerBase
     {
-        private const string ConString = "Data Source=db-mssql;Initial Catalog=s18358;Integrated Security=True";
+        private readonly IStudentsDal _services;
+
+        public EnrollmentController(IStudentsDal iStudent)
+        {
+            _services = iStudent;
+        }
+
         [HttpPost]
         public IActionResult EnrollStudent(EnrollStudentRequest request)
         {
-
-            using (var con = new SqlConnection(ConString))
-            using (var com = new SqlCommand())
+            try
             {
-                com.Connection = con;
-                con.Open();
-                var tran = con.BeginTransaction();
-
-                try
-                {
-                    com.CommandText = "select IdStudies from Studies where name=@name";
-                    com.Parameters.AddWithValue("name", request.Studies);
-                    var dr = com.ExecuteReader();
-                    if (!dr.Read())
-                    {
-                        tran.Rollback();
-                        return BadRequest("Podane studia nie istnieja");
-                    }
-                    int idstudies = (int)dr["IdStudies"];
-
-
-                }
-                catch (SqlException e)
-                {
-                    tran.Rollback();
-                    return BadRequest(e);
-                }
-                tran.Commit();
-                return Ok();
+                return Ok(_services.EnrollStudent(request));
+            } catch (Exception e){
+                return BadRequest(e);
             }
+          
+         
         }
     }
 }
