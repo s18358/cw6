@@ -9,7 +9,7 @@ namespace APBD.Controllers
     [ApiController]
     public class EnrollmentController : ControllerBase
     {
-        private readonly IStudentsDal _services;
+        private IStudentsDal _services;
 
         public EnrollmentController(IStudentsDal iStudent)
         {

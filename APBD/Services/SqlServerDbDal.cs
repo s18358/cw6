@@ -26,8 +26,7 @@ namespace APBD.Services
                 com.Parameters.AddWithValue("Names", request.Studies);
                 con.Open();
                 var transaction = con.BeginTransaction();
-                try
-                {
+
                     var reader = com.ExecuteReader();
                     if (!reader.Read())
                     {
@@ -89,12 +88,7 @@ namespace APBD.Services
                 
                     transaction.Commit();
                     return new EnrollStudentResponse() { IdEnrollment = enrollmentId, Semester = 1, Studies = idStudy, StartDate = startDate };
-                }
-                catch (SqlException exc)
-                {
-                    transaction.Rollback();
-                    return null;
-                }            
+          
             }
         }
     }
