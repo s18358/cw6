@@ -1,15 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using APBD.DAL;
+using APBD.DTOs.Requests;
 using APBD.Models;
 using APBD.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 
 namespace APBD.Controllers
 {
@@ -20,8 +26,13 @@ namespace APBD.Controllers
     {
         private const string ConString = "Data Source=db-mssql;Initial Catalog=s18358;Integrated Security=True";
 
+        public IConfiguration Configuration { get; set; }
+        public StudentsController(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
 
-     
+
         [HttpGet]
         [Authorize(Roles = "admin")]
         public IActionResult GetStudents()
@@ -29,8 +40,8 @@ namespace APBD.Controllers
 
 
             var list = new List<Student>();
-            using(SqlConnection con = new SqlConnection(ConString))
-            using(SqlCommand com = new SqlCommand())
+            using (SqlConnection con = new SqlConnection(ConString))
+            using (SqlCommand com = new SqlCommand())
             {
                 com.Connection = con;
                 com.CommandText = "select * from student";
@@ -48,7 +59,7 @@ namespace APBD.Controllers
             }
 
 
-            
+
             return Ok(list);
         }
 
@@ -81,21 +92,14 @@ namespace APBD.Controllers
                     return Ok(en);
                 }
             }
-                return NotFound();
+            return NotFound();
         }
 
-
-        [HttpPost]
-        public IActionResult CreateStudent(Student student)
-        {
-            student.indexNumber = $"s{new Random().Next(1, 2000)}";
-            return Ok(student);
-        }
 
         [HttpPut("{id}")]
         public IActionResult UpdateStudent(int id)
         {
-            if(id == 1)
+            if (id == 1)
             {
                 return Ok("Student zaktualizowany");
             }
@@ -107,6 +111,29 @@ namespace APBD.Controllers
         public IActionResult DeleteStudent(int id)
         {
             return Ok("Usuwanie ukończone");
+        }
+
+        [HttpPost]
+        public IActionResult Login(LoginRequest request)
+        {
+            var claims = new[]
+         {
+                new Claim(ClaimTypes.NameIdentifier, "1"),
+                new Claim(ClaimTypes.Name, "jan123"),
+                new Claim(ClaimTypes.Role, "admin"),
+                new Claim(ClaimTypes.Role, "student")
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SecretKey"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var token = new JwtSecurityToken
+            (issuer: "s18358", audience: "tester", claims: claims, expires: DateTime.Now.AddMinutes(15), signingCredentials: creds);
+
+            return Ok(new
+            {
+                token = new JwtSecurityTokenHandler().WriteToken(token),
+                refreshToken = Guid.NewGuid()
+            });
         }
     }
 }

@@ -18,3 +18,30 @@ Path: /api/students
 QueryString:GET 
 Method:  
 Body Parameters: 
+Path: /api/students 
+QueryString:GET 
+Method:  
+Body Parameters: 
+Path: /api/students 
+QueryString:GET 
+Method:  
+Body Parameters: 
+Path: /api/students 
+QueryString:GET 
+Method:  
+Body Parameters: 
+Path: /api/students 
+QueryString:POST 
+Method:  
+Body Parameters: {
+	"login": "aaa",
+	"pass": "bbb"
+}
+Path: /api/students 
+QueryString:GET 
+Method:  
+Body Parameters: 
+Path: /api/students 
+QueryString:GET 
+Method:  
+Body Parameters: 
