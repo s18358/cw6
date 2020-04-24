@@ -7,7 +7,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using APBD.Middleware;
 using Microsoft.AspNetCore.Http;
-
+using APBD.Handlers;
+using Microsoft.AspNetCore.Authentication;
 
 namespace APBD
 {
@@ -23,6 +24,7 @@ namespace APBD
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAuthentication("AuthenticationBasic").AddScheme<AuthenticationSchemeOptions, BasicAuthHandler>("AuthenticationBasic", null);
             services.AddTransient<IStudentsDal, SqlServerDbDal>();
             services.AddControllers();
             // Dodawanie dokumentaji .1
@@ -75,6 +77,8 @@ namespace APBD
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

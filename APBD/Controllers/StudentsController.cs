@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using APBD.DAL;
 using APBD.Models;
 using APBD.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,8 +23,11 @@ namespace APBD.Controllers
 
      
         [HttpGet]
-        public IActionResult GetStudents([FromServices] IStudentsDal dbService)
+        [Authorize(Roles = "admin")]
+        public IActionResult GetStudents()
         {
+
+
             var list = new List<Student>();
             using(SqlConnection con = new SqlConnection(ConString))
             using(SqlCommand com = new SqlCommand())
